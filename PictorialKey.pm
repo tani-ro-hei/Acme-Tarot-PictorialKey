@@ -1,15 +1,15 @@
-package Acme::Tarot::PictorialKey;
+package Acme::Tarot::PictorialKey 0.10;
 
-use 5.22.0;
+use 5.20.0;
 use warnings;
 use utf8;
 use Carp        qw( croak );
 use List::Util  qw( shuffle );
+
 use Acme::Tarot::PictorialKey::TxtDat;
-
-use constant DEFAULT_NUMBER => 3;
-
 our %TxtDat;  # defined already in PictorialKey/TxtDat.pm
+
+use constant DEFAULT_OPEN => 3;
 
 
 my %cdset = (
@@ -28,87 +28,130 @@ sub new {
     my ($pkg, %args) = @_;
     my $self = {};
 
-    $self->{number} = _chk_number($args{number});
-    $self->{cdset}  = _chk_cdset($args{cdset});
+    $self->{_open} = _chk_open( $args{open} );
+    $self->{_deck} = _chk_deck( $args{deck} );
 
-    bless $self, $pkg;
-    $self;
+    return bless( $self => $pkg );
 }
 
 
-# # # Accessors
+# # # Accessor(Mutator)
 
-sub _chk_number {
+sub _chk_open {
     my $num = shift;
 
     unless (defined $num) {
-        return DEFAULT_NUMBER;
+        return DEFAULT_OPEN;
     } elsif ($num =~ /^[0-9]+$/) {
         return $num;
     } else {
-        croak "Given num<$num> isn't numeric!";
+        croak "Given Num<$num> isn't numeric!";
     }
 }
 
-sub number {
+sub open {
     my $self = shift;
 
     if (@_) {
-        my $prev = $self->{number};
-        $self->{number} = _chk_number( shift );
+        my $prev = $self->{_open};
+        $self->{_open} = _chk_open( shift );
         return $prev;
     } else {
-        return $self->{number};
+        return $self->{_open};
     }
 }
 
-sub _chk_cdset {
-    my $set = shift;
+sub _chk_deck {
+    my $deckname = shift;
 
-    if (ref $set) {
-        (ref($set) eq 'ARRAY')
-            ? return $set
-            : croak "ref<$set>: Please pass me a cards' ARRAY ref!"
-        ;
-    } elsif (defined $set) {
-        (exists $cdset{ uc $set })
-            ? return $cdset{ uc $set }
-            : croak "Such a cdset-string<$set> is cannot be interpreted!"
+    if (defined $deckname) {
+        (exists $cdset{ uc $deckname })
+            ? return uc($deckname)
+            : croak "Such a deck Str<$deckname> cannot be interpreted!"
         ;
     } else {
-        return $cdset{FULL};
+        return 'FULL';
     }
 }
 
-sub cdset {
+sub deck {
     my $self = shift;
 
     if (@_) {
-        my $prev = $self->{cdset};
-        $self->{cdset} = _chk_cdset( shift );
-        return wantarray ? @$prev : $prev;
+        my $prev = $self->{_deck};
+        $self->{_deck} = _chk_deck( shift );
+        return $prev;
     } else {
-        return wantarray ? @{$self->{cdset}} : $self->{cdset};
+        return $self->{_deck};
     }
 }
 
 
-# # # Processes
+# # # Spread Proc
+
+sub _spread {
+    my ($deckname, $open) = @_;
+
+    my @deck = $cdset{ $deckname }->@*;
+    croak "Num<$open>: Too many cards to open from the deck<$deckname>!"
+            unless @deck >= $open;
+#                                                        ∧
+#                                                 ＿_＿／＿＼＿_＿
+    my @cards; #                                  ＼  ／    ＼  ／
+          @cards = 0 .. $#deck; #                   ×   ★   ×
+             @cards = (shuffle #                  ／  ＼    ／  ＼
+                @cards)[0 .. ($open - 1)]; #      ￣‾￣＼￣／￣‾￣
+                   @cards = @deck[ #                     ∨
+                      @cards];
+                         @cards = map { [$_, (shuffle qw/upright reversed/)[0]] }
+                            @cards;
+                              \@cards;
+}
+
+sub _appear {
+    my $cardsref = shift;
+    my %cnt;
+
+    for my $cd (@$cardsref) {
+        my ($cdname, $position) = ($cd->[0], $cd->[1]);
+        next unless $cdname =~ /^(?:w|c|s|p)/;
+        $cdname =~ /(?<numerology> [1-9][0-9]*)/x;
+        $cnt{"$+{numerology} $position"}++;
+    }
+
+    my @keys;
+    for my $k (keys %cnt) {
+        next unless 1 < $cnt{$k};
+        $k =~ /^ (?<numerology> [1-9][0-9]*) \s (?<position> \w)\w+ $/x;
+        push @keys, do {
+            $+{position} . sprintf('%02d', $+{numerology}) . 'x' . $cnt{$k};
+        };
+    }
+    return @keys;
+}
 
 sub spread {
     my $self = shift;
 
-    croak "Too many cards<$self->{number}> to spread from the cardset!"
-            unless @{$self->{cdset}} >= $self->{number};
-    my @cards = 0 .. $#{$self->{cdset}};
-    @cards = (shuffle @cards)[0 .. ($self->{number} - 1)];
-    @cards = @{$self->{cdset}}[ @cards ];
-    @cards = map {
-            [
-                $_,                                 # $cd->[0]
-                (shuffle qw/upright reversed/)[0],  # $cd->[1]
-            ]
-        } @cards;
+    my @cards = sub {
+            my $aref = [];
+
+            unless (@_) {
+                $aref = _spread( $self->deck, $self->open );
+            } else {
+                for (@_) {
+                    if (ref) {
+                        push @$aref, $_;
+                    } else {
+                        /^[mwcsp]\d\d$/i  # weak
+                                or croak "Such a card<$_> doesn't exist!";
+                        push @$aref, [ lc, 'upright' ];
+                    }
+                }
+            }
+
+            $aref;
+        }->(@_)->@*;
 
     $self->{_RESULT} = [];
     for my $cd (@cards) {
@@ -121,31 +164,27 @@ sub spread {
         );
     }
 
-    $self->{_TUPLES} = [];
-    my %cnt;
-    for my $cd (grep { $_->[0] =~ /^(?:w|c|s|p)/ } @cards) {
-        $cd->[0] =~ /([1-9][0-9]*)/;
-        $cnt{"$cd->[1] $1"}++;
-    }
-    for my $k (keys %cnt) {
-        if (1 < $cnt{$k}) {
-            $k =~ /^(\w)\w+ ([1-9][0-9]*)$/;
-            my ($pos, $cdnum) = ($1, $2);
-            my $appear_key = $pos . sprintf('%02d', $cdnum) . 'x' . $cnt{$k};
-            push(
-                @{$self->{_TUPLES}},
-                $TxtDat{Tuples}->{$appear_key},
-            );
-        }
+    $self->{_EXTRA} = [];
+    {
+        my @keys = _appear( \@cards );
+        push @{$self->{_EXTRA}}, $TxtDat{Extra}->{$_} for @keys;
     }
 
     $self;
 }
 
 
-# # # Display
+# # # Tell Your Fortune
 
-sub result {
+sub extra {
+    my $self = shift;
+    my $extr = shift;
+    $extr = $TxtDat{Extra}->{$extr} unless ref $extr;
+
+    return "(Extra) You've got $extr->{APPEAR}. It means <$extr->{MEAN}>.\n";
+}
+
+sub tell {
     my $self = shift;
 
     unless (@{$self->{_RESULT}}) {
@@ -161,10 +200,8 @@ sub result {
             $str .= "$r->{CARD}->{BRIEF}\n\n";
         }
 
-        if (@{$self->{_TUPLES}}) {
-            for my $r (@{$self->{_TUPLES}}) {
-                $str .= "(Extra) You've got $r->{APPEAR}. It means <$r->{MEAN}>.\n";
-            }
+        if (@{$self->{_EXTRA}}) {
+            $str .= $self->extra( $_ ) for @{$self->{_EXTRA}};
             $str .= "\n";
         }
 
@@ -184,11 +221,9 @@ sub more {
         my $i = 0;
         for my $r (@{$self->{_RESULT}}) {
             $i++;
-            $str .= "* * * Okey. Your card, <$i> $r->{CARD}->{NAME}, $r->{POSITION}, means:\n";
-            for (split /\n/, $r->{CARD}->{DESC}) {
-                $str .= "    $_\n";
-            }
-            $str .= "\n";
+            $str .= " * * * Okay. Your card, <$i> $r->{CARD}->{NAME} ($r->{POSITION}), means:\n";
+            $str .= ($r->{CARD}->{DESC} =~ s/^/    /grm);
+            $str .= "\n\n";
         }
 
         return $str;
