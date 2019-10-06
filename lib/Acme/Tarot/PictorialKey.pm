@@ -143,14 +143,14 @@ sub spread {
                     if (ref) {
                         push @$aref, $_;
                     } else {
-                        /^[mwcsp]\d\d$/i  # weak
+                        /^[mwcsp]\d\d$/i  # it's weak
                                 or croak "Such a card<$_> doesn't exist!";
                         push @$aref, [ lc, 'upright' ];
                     }
                 }
             }
-
             $aref;
+
         }->(@_)->@*;
 
     $self->{_RESULT} = [];
@@ -176,10 +176,10 @@ sub spread {
 
 # # # Tell Your Fortune
 
-sub extra {
+sub extrastr {
     my $self = shift;
     my $extr = shift;
-    $extr = $TxtDat{Extra}->{$extr} unless ref $extr;
+    $extr = $TxtDat{Extra}->{$extr} unless ref $extr;  # be to check
 
     return "(Extra) You've got $extr->{APPEAR}. It means <$extr->{MEAN}>.\n";
 }
@@ -201,7 +201,7 @@ sub tell {
         }
 
         if (@{$self->{_EXTRA}}) {
-            $str .= $self->extra( $_ ) for @{$self->{_EXTRA}};
+            $str .= $self->extrastr( $_ ) for @{$self->{_EXTRA}};
             $str .= "\n";
         }
 

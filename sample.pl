@@ -4,7 +4,7 @@ use utf8;
 
 # You can remove the following two lines, installing PictorialKey.pm in the appropriate location.
 use FindBin;
-use lib "$FindBin::Bin/../..";
+use lib "$FindBin::Bin/lib";
 
 use Acme::Tarot::PictorialKey 0.10;
 print "PictorialKey, v$Acme::Tarot::PictorialKey::VERSION.\n\n";
@@ -22,13 +22,19 @@ DIALOGUE: while (1) {
     $t->open($num);
     say $t->spread->tell;
 
-    print "Would you like to see more detailed meanings? (y/n)\n>>";
-    (my $yn = <STDIN>) =~ s!\s+!!g;
+    DO_WHILE: {
+        print "Would you like to see more detailed meanings? (y/n)\n>>";
+        (my $yn = <STDIN>) =~ s!\s+!!g;
 
-    for ($yn) {
-        /^y$/i         and say "\n", $t->more;
-        /^x$/          and last DIALOGUE;
-        /^[^yYxnN]*$/  and say 'I guess your answer is No.';
+        SWITCH: {
+            for ($yn) {
+                /^y$/i  and say("\n", $t->more),  last SWITCH;
+                /^n$/i  and print("\n"),          last SWITCH;
+                /^x$/   and                       last DIALOGUE;
+                # else
+                print("Your answer<$_> cannot be interpreted!\n\n"), goto DO_WHILE;
+            }
+        }
     }
 }
 
