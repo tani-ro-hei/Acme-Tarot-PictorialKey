@@ -2,6 +2,7 @@ package Acme::Tarot::PictorialKey 0.10;
 
 use 5.20.0;
 use warnings;
+use warnings  FATAL => qw( uninitialized );
 use utf8;
 use Carp        qw( croak );
 use List::Util  qw( shuffle );
@@ -26,8 +27,9 @@ $cdset{FULL}  = [ @{$cdset{MAJOR}}, @{$cdset{MINOR}} ];
 
 sub new {
     my ($pkg, %args) = @_;
-    my $self = {};
+    $pkg = ref($pkg) || $pkg;
 
+    my $self = {};
     $self->{_open} = _chk_open( $args{open} );
     $self->{_deck} = _chk_deck( $args{deck} );
 
@@ -115,17 +117,18 @@ sub _appear {
     for my $cd (@$cardsref) {
         my ($cdname, $position) = ($cd->[0], $cd->[1]);
         next unless $cdname =~ /^(?:w|c|s|p)/;
-        $cdname =~ /(?<numerology> [1-9][0-9]*)/x;
-        $cnt{"$+{numerology} $position"}++;
+        $position =~ s<^ (\w) .* $><$1>x;
+        $cdname   =~ /(?<numerology> [1-9][0-9]*)/x;
+        $cnt{ "$+{numerology} $position" }++;
     }
 
     my @keys;
     for my $k (keys %cnt) {
         next unless 1 < $cnt{$k};
-        $k =~ /^ (?<numerology> [1-9][0-9]*) \s (?<position> \w)\w+ $/x;
-        push @keys, do {
-            $+{position} . sprintf('%02d', $+{numerology}) . 'x' . $cnt{$k};
-        };
+        $k =~ /^ (?<numerology> [1-9][0-9]*) \s (?<position> \w) $/x;
+        push @keys, lc(
+            $+{position} . sprintf('%02d', $+{numerology}) . 'x' . $cnt{$k}
+        );
     }
     return @keys;
 }
@@ -138,10 +141,17 @@ sub spread {
 
             unless (@_) {
                 $aref = _spread( $self->deck, $self->open );
+
             } else {
                 for (@_) {
+
                     if (ref) {
-                        push @$aref, $_;
+                        my $cdname   = $_->[0];
+                        my $position = $_->[1] =~ /^u/i
+                                ? 'upright'
+                                : 'reversed';  # lazy
+                        push @$aref, [ $cdname, $position ];
+
                     } else {
                         /^[mwcsp]\d\d$/i  # it's weak
                                 or croak "Such a card<$_> doesn't exist!";
@@ -158,8 +168,8 @@ sub spread {
         push(
             @{$self->{_RESULT}},
             {
-                CARD     => $TxtDat{Cards}->{ $cd->[0] },
-                POSITION => $cd->[1],
+                CARD     => $TxtDat{Cards}->{ lc $cd->[0] },
+                POSITION => lc $cd->[1],
             }
         );
     }
@@ -179,7 +189,8 @@ sub spread {
 sub extrastr {
     my $self = shift;
     my $extr = shift;
-    $extr = $TxtDat{Extra}->{$extr} unless ref $extr;  # be to check
+    $extr = $TxtDat{Extra}->{ lc $extr }
+            unless ref $extr;  # be to check more
 
     return "(Extra) You've got $extr->{APPEAR}. It means <$extr->{MEAN}>.\n";
 }

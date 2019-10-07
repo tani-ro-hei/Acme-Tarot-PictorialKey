@@ -285,7 +285,7 @@ $TxtDat{Cards} = {
                . "  -> [Divinatory Meanings] A card of many significances, and some of the readings cannot be harmonized. I set aside that which connects it with honour and good faith. The chief meaning is oppression simply, but it is also fortune, gain, any kind of success, and then it is the oppression of these things. It is also a card of false-seeming, disguise, perfidy. The place which the figure is approaching may suffer from the rods that he carries. Success is stultified if the Nine of Swords follows, and if it is a question of a lawsuit, there will be certain loss.\n"
                . "  -> [Reversed] Contrarieties, difficulties, intrigues, and their analogies.",
 
-        BRIEF => "  -> [Difficulties and contradictions, if near a good card.",
+        BRIEF => "  -> Difficulties and contradictions, if near a good card.",
     },
 
     w09 => {
@@ -295,7 +295,7 @@ $TxtDat{Cards} = {
                . "  -> [Divinatory Meanings] The card signifies strength in opposition. If attacked, the person will meet an onslaught boldly; and his build shews, that he may prove a formidable antagonist. With this main significance there are all its possible adjuncts -- delay, suspension, adjournment.\n"
                . "  -> [Reversed] Obstacles, adversity, calamity.",
 
-        BRIEF => "  -> [Generally speaking, a bad card.",
+        BRIEF => "  -> Generally speaking, a bad card.",
     },
 
     w08 => {
@@ -305,7 +305,7 @@ $TxtDat{Cards} = {
                . "  -> [Divinatory Meanings] Activity in undertakings, the path of such activity, swiftness, as that of an express messenger; great haste, great hope, speed towards an end which promises assured felicity; generally, that which is on the move; also the arrows of love.\n"
                . "  -> [Reversed] Arrows of jealousy, internal dispute, stingings of conscience, quarrels; and domestic disputes for persons who are married.",
 
-        BRIEF => "  -> [Domestic disputes for a married person.",
+        BRIEF => "  -> Domestic disputes for a married person.",
     },
 
     w07 => {
@@ -315,7 +315,7 @@ $TxtDat{Cards} = {
                . "  -> [Divinatory Meanings] It is a card of valour, for, on the surface, six are attacking one, who has, however, the vantage position. On the intellectual plane, it signifies discussion, wordy strife; in business -- negotiations, war of trade, barter, competition. It is further a card of success, for the combatant is on the top and his enemies may be unable to reach him.\n"
                . "  -> [Reversed] Perplexity, embarrassments, anxiety. It is also a caution against indecision.",
 
-        BRIEF => "  -> [A dark child.",
+        BRIEF => "  -> A dark child.",
     },
 
     w06 => {
@@ -358,7 +358,7 @@ $TxtDat{Cards} = {
                . "  -> [Divinatory Meanings] He symbolizes established strength, enterprise, effort, trade, commerce, discovery; those are his ships, bearing his merchandise, which are sailing over the sea. The card also signifies able co-operation in business, as if the successful merchant prince were looking from his side towards yours with a view to help you.\n"
                . "  -> [Reversed] The end of troubles, suspension or cessation of adversity, toil and disappointment.",
 
-        BRIEF => "  -> [A very good card; collaboration will favour enterprise.",
+        BRIEF => "  -> A very good card; collaboration will favour enterprise.",
     },
 
     w02 => {
@@ -368,7 +368,7 @@ $TxtDat{Cards} = {
                . "  -> [Divinatory Meanings] Between the alternative readings there is no marriage possible; on the one hand, riches, fortune, magnificence; on the other, physical suffering, disease, chagrin, sadness, mortification. The design gives one suggestion; here is a lord overlooking his dominion and alternately contemplating a globe; it looks like the malady, the mortification, the sadness of Alexander amidst the grandeur of this world's wealth.\n"
                . "  -> [Reversed] Surprise, wonder, enchantment, emotion, trouble, fear.",
 
-        BRIEF => "  -> [A young lady may expect trivial disappointments.",
+        BRIEF => "  -> A young lady may expect trivial disappointments.",
     },
 
     w01 => {
