@@ -20,7 +20,7 @@ say Acme::Tarot::PictorialKey->new( open => 5 )->spread->more;
 
 Arthur Waite's **_The Pictorial Key to the Tarot_**, a monumental achievement of the Tarot Art, is a common inheritance of mankind. It is also in the public domain. This Perl module spreads Tarot cards, and tells you their meanings by the original text of _The Pictorial Key_.
 
-This module is able to tell three types of meanings of spreaded cards. They are _brief_, _long esoteric_, and _extra_ explanation of the occurred combination, if it occur.
+This module is able to tell three types of meanings of spreaded cards. They are _brief_, _long esoteric_ explanations, and _extra_ one of the occurred combination, if it occur.
 
 If what you want is only to do fortune telling, install this module as it is, and simply execute **sample.pl**.
 
