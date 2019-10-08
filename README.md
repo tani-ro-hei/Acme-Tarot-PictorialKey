@@ -12,13 +12,17 @@ my $fortune = Acme::Tarot::PictorialKey->new( open => 5 );
 $fortune->spread;
 say $fortune->tell;
 say $fortune->more;
+
+say Acme::Tarot::PictorialKey->new( open => 5 )->spread->more;
 ```
 
 ## Description
 
-Arthur Waite's **_The Pictorial Key to the Tarot_**, a monumental achievement of the Tarot Art, is a common inheritance of mankind. It is in the public domain. This Perl Module spreads Tarot cards, and tells their meanings by the original text of _The Pictorial Key_.
+Arthur Waite's **_The Pictorial Key to the Tarot_**, a monumental achievement of the Tarot Art, is a common inheritance of mankind. It is also in the public domain. This Perl module spreads Tarot cards, and tells you their meanings by the original text of _The Pictorial Key_.
 
-If what you want is only doing fortune-telling, install this module as it is, and execute `sample.pl`.
+This module is able to tell three types of meanings of spreaded cards. They are _brief_, _long esoteric_, and _extra_ explanation of the occurred combination, if it occur.
+
+If what you want is only to do fortune telling, install this module as it is, and simply execute **sample.pl**.
 
 ## Card/Deck Descriptors
 
@@ -53,8 +57,8 @@ $str = $fortune->deck;
 $fortune->deck('major');
 ```
 
-`open` method gets or sets the number of spreading cards.  
-`deck` method gets or sets the deck-descriptor you want.
+`open` method gets/sets the number of spreading cards.  
+`deck` method gets/sets the deck-descriptor you need.
 
 - **`spread`**
 
@@ -64,8 +68,8 @@ $fortune->spread(qw| w03 c11 m15 |);
 $fortune->spread( [qw(w03 upright)], 'c11', [qw(m15 reversed)] );
 ```
 
-Without arguments, `spread` spreads cards according to internal conditions.  
-Passing arguments, internal conditions are ignored. And foreach arguments, being _Scalar_, it is interpreted as a card-descriptor, with the position as **upright**. Being _ARRAY Ref_, as a tuple of a card and its position.
+Without arguments, the `spread` method spreads cards according to your setup.  
+Passing arguments, internal conditions are ignored. And foreach arguments, being _Scalar_, it is interpreted as a card-descriptor, with the position as **upright**; being _ARRAY Ref_, as a tuple of a card and its position.
 
 - **`tell`** / **`more`** / **`extrastr`**
 
@@ -75,16 +79,9 @@ say $fortune->more;
 say $fortune->extrastr('r04x3');  # meanings of occurrence of three reversed Fours
 ```
 
+They return Strings.  
 Call `spread` before using `tell` or `more`. `tell` shows spreaded cards' meanings briefly, `more` verbosely.  
-`extrastr` method is for confirmation usage.
-
-- Method Chaining
-
-```
-say Acme::Tarot::PictorialKey->new( open => 5 )->spread->more;
-```
-
-Note that since `tell`, `more`, `extrastr` methods do return not _Objects_ but _Strings_, method chaining of them is not available.
+`extrastr` method is only for confirmation usage.
 
 ## Version
 
@@ -94,5 +91,5 @@ Note that since `tell`, `more`, `extrastr` methods do return not _Objects_ but _
 
 Copyright© 2019-tbd., TANIGUCHI Ippei. All rights reserved.
 
-This library is **free** software, dual licensed; you can redistribute it and/or modify it  
+This module is **free** software, dual licensed; you can redistribute it and/or modify it  
 under the [NYSL-0.9982](http://www.kmonos.net/nysl) or [WTFPL-2](http://www.wtfpl.net/txt/copying) licenses, or any later version of them.

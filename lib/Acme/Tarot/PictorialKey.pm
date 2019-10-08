@@ -126,9 +126,9 @@ sub _appear {
     for my $k (keys %cnt) {
         next unless 1 < $cnt{$k};
         $k =~ /^ (?<numerology> [1-9][0-9]*) \s (?<position> \w) $/x;
-        push @keys, lc(
-            $+{position} . sprintf('%02d', $+{numerology}) . 'x' . $cnt{$k}
-        );
+        push @keys, do {
+            $+{position} . sprintf('%02d', $+{numerology}) . 'x' . $cnt{$k};
+        };
     }
     return @keys;
 }
@@ -150,7 +150,7 @@ sub spread {
                         my $position = $_->[1] =~ /^u/i
                                 ? 'upright'
                                 : 'reversed';  # lazy
-                        push @$aref, [ $cdname, $position ];
+                        push @$aref, [ lc($cdname), $position ];
 
                     } else {
                         /^[mwcsp]\d\d$/i  # it's weak
@@ -168,8 +168,8 @@ sub spread {
         push(
             @{$self->{_RESULT}},
             {
-                CARD     => $TxtDat{Cards}->{ lc $cd->[0] },
-                POSITION => lc $cd->[1],
+                CARD     => $TxtDat{Cards}->{ $cd->[0] },
+                POSITION => $cd->[1],
             }
         );
     }
