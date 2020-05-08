@@ -332,7 +332,7 @@ $TxtDat{Cards} = {
     w05 => {
         NAME  => 'Five of WANDS',
 
-        DESC  => "A posse of youths, who are brandishing staves, as if in sport or strife. It is mimic warfare, and hereto correspond the\n"
+        DESC  => "A posse of youths, who are brandishing staves, as if in sport or strife. It is mimic warfare, and hereto correspond the Divinatory Meanings:\n"
                . "  -> [Divinatory Meanings] Imitation, as, for example, sham fight, but also the strenuous competition and struggle of the search after riches and fortune. In this sense it connects with the battle of life. Hence some attributions say that it is a card of gold, gain, opulence.\n"
                . "  -> [Reversed] Litigation, disputes, trickery, contradiction.",
 
