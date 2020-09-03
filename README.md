@@ -8,12 +8,15 @@ Acme::Tarot::PictorialKey - Tarot Reading with Arthur Waite's Pictorial Key
 
 ```
 use Acme::Tarot::PictorialKey;
+
+use feature 'say';
 my $fortune = Acme::Tarot::PictorialKey->new( open => 5 );
 $fortune->spread;
 say $fortune->tell;
 say $fortune->more;
 
-say Acme::Tarot::PictorialKey->new( open => 5 )->spread->more;
+# Method chaining
+print Acme::Tarot::PictorialKey->new( open => 5 )->spread->more;
 ```
 
 ## Description

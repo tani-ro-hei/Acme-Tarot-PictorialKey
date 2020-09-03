@@ -2,7 +2,7 @@ package Acme::Tarot::PictorialKey;
 
 use utf8;
 
-our %TxtDat = ( Cards  => {}, Extra => {} );
+our %TxtDat = ( Cards => {}, Extra => {} );
 # hashrefs $TxtDat{Cards}, $TxtDat{Extra} are defined below:
 
 
